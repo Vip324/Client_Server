@@ -95,7 +95,8 @@ class TestMyUtils(unittest.TestCase):
     def test_server_processing_good(self):
         client_msg = {
             ACTION: PRESENCE,
-            TIME: int(datetime.now().timestamp())
+            TIME: int(datetime.now().timestamp()),
+            USER: {}
         }
         client_adr = ('127.0.0.1', 5123)
         self.assertEqual(server_processing_msg(client_adr, client_msg), SERVER_MSG_200)
