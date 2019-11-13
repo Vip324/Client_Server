@@ -4,18 +4,19 @@ from datetime import datetime
 from common.utils import *
 
 
-class Test_Utils(unittest.TestCase):
+class TestMyUtils(unittest.TestCase):
     # проверка IP адреса
     def test_ip_adr_good(self):
         self.assertEqual(ip_adr_validator('127.0.0.1'), True)
 
-    def test_ip_adr_bad_1(self):
-        self.assertEqual(ip_adr_validator('727.0.0.1'), False)
-        self.assertEqual(ip_adr_validator('127.300.0.1'), False)
-        self.assertEqual(ip_adr_validator('127.0.400.1'), False)
-        self.assertEqual(ip_adr_validator('127.0.0.256'), False)
+    def test_ip_adr_num_lim(self):
+        for i in range(4):
+            adr_str = ['1', '.', '1', '.', '1', '.', '1']
+            adr_str[i * 2] = '333'
+            patt = ''.join(adr_str)
+            self.assertEqual(ip_adr_validator(patt), False)
 
-    def test_ip_adr_bad_2(self):
+    def test_ip_adr_correct_form(self):
         self.assertEqual(ip_adr_validator('127.0.0'), False)
 
     # проверка порта
@@ -120,7 +121,6 @@ class Test_Utils(unittest.TestCase):
         }
         client_adr = ('127.0.0.1', 5123)
         self.assertEqual(server_processing_msg(client_adr, client_msg), SERVER_MSG_444)
-
 
 
 if __name__ == '__main__':
