@@ -10,11 +10,9 @@ class TestMyUtils(unittest.TestCase):
         self.assertEqual(ip_adr_validator('127.0.0.1'), True)
 
     def test_ip_adr_num_lim(self):
+        patt = ['333.1.1.1', '1.333.1.1', '1.1.333.1', '1.1.1.333']
         for i in range(4):
-            adr_str = ['1', '.', '1', '.', '1', '.', '1']
-            adr_str[i * 2] = '333'
-            patt = ''.join(adr_str)
-            self.assertEqual(ip_adr_validator(patt), False)
+            self.assertEqual(ip_adr_validator(patt[i]), False)
 
     def test_ip_adr_correct_form(self):
         self.assertEqual(ip_adr_validator('127.0.0'), False)
