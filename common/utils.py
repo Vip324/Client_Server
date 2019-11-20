@@ -16,6 +16,7 @@ def ip_adr_validator(str):
         return False
     return True
 
+
 @log
 def port_validation(port):
     if type(port) != int:
@@ -23,6 +24,7 @@ def port_validation(port):
     if port < 1023 or port > 65535:
         return False
     return True
+
 
 @log
 def len_client_data_validator(data):
@@ -32,12 +34,14 @@ def len_client_data_validator(data):
         data = json.dumps({'0': '0'})
     return data
 
+
 @log
 def client_server_msg_validation(msg):
     if not (ACTION in msg.keys()) or not (TIME in msg.keys()):
         logger_server.warning('Формат сообщение от клиента не корректный!')
         return False
     return True
+
 
 @log
 def server_client_msg_validation(msg):
@@ -69,3 +73,35 @@ def server_processing_msg(client_adr, client_msg):
     # пока не описанные команды 'action'
     logger_server.info('Пока не умеею работать с это командой')
     return SERVER_MSG_444
+
+
+# процедуры для server_echo
+def read_requests(clients_r, all_clients):
+    responses = {}
+    for sock in clients_r:
+        try:
+            data = sock.recv(640).decode(CODE)
+            if not data:
+                logger_server.info(f'Сокет {sock.getpeername()} закрылся.')
+                all_clients.remove(sock)
+                break
+
+            responses[sock] = data
+
+        except:
+            all_clients.remove(sock)
+
+    return responses
+
+
+def write_responses(requests, clients_r, all_clients):
+    for sock in all_clients:
+        if sock in requests:
+            resp = requests[sock].encode(CODE)
+            try:
+                for sock_r in clients_r:
+                    sock_r.send(resp)
+
+            except:
+                logger_server.warning(f'Клиент {sock.fileno()} {sock.getpeername()} отключился.')
+                all_clients.remove(sock)
